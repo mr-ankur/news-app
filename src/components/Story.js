@@ -9,16 +9,16 @@ export default class Story extends Component {
     storyData: null,
   };
   componentDidMount() {
-    const storyId = this.props.id;
-    axios
-      .get(
-        "https://hacker-news.firebaseio.com/v0/item/" +
-          storyId +
-          ".json?print=pretty"
-      )
-      .then((res) => {
-        this.setState({ storyData: res.data });
-      });
+    // const storyId = this.props.id;
+    // axios
+    //   .get(
+    //     "https://hacker-news.firebaseio.com/v0/item/" +
+    //       storyId +
+    //       ".json?print=pretty"
+    //   )
+    //   .then((res) => {
+    //     this.setState({ storyData: res.data });
+    //   });
   }
   extractHostname(url) {
     var hostname;
@@ -38,55 +38,61 @@ export default class Story extends Component {
     return hostname;
   }
   timeSince(date) {
-
     var seconds = Math.floor((new Date() - date) / 1000);
 
     var interval = seconds / 31536000;
 
     if (interval > 1) {
-        return Math.floor(interval) + " years";
+      return Math.floor(interval) + " years";
     }
     interval = seconds / 2592000;
     if (interval > 1) {
-        return Math.floor(interval) + " months";
+      return Math.floor(interval) + " months";
     }
     interval = seconds / 86400;
     if (interval > 1) {
-        return Math.floor(interval) + " days";
+      return Math.floor(interval) + " days";
     }
     interval = seconds / 3600;
     if (interval > 1) {
-        return Math.floor(interval) + " hours";
+      return Math.floor(interval) + " hours";
     }
     interval = seconds / 60;
     if (interval > 1) {
-        return Math.floor(interval) + " minutes";
+      return Math.floor(interval) + " minutes";
     }
     return Math.floor(seconds) + " seconds";
-    }
+  }
   render() {
-    const storyData = this.state.storyData;
-    console.log(4444, storyData);
+    const storyData = this.props.story;
     return (
       <Container>
         {storyData && (
-          <div style={{ paddingBottom: '15px'}}>
-            <Row>
+          <div style={{ marginTop: "2rem" }}>
+            <Row style={{ background: "#dedede", padding: "10px 0px 10px 0" }}>
               <Col xs={2}>{this.props.index}</Col>
               <Col xs={10}>
                 <Row>
                   <Col xs={8}>{storyData.title}</Col>
                   <Col xs={2}>
-                    ({psl.get(this.extractHostname(storyData.url))})
+                    (
+                    {storyData.url
+                      ? psl.get(this.extractHostname(storyData.url))
+                      : ""}
+                    )
                   </Col>
                 </Row>
-                <Row>
+                <Row style={{ marginTop: "0.5rem" }}>
                   <Col xs={2}>{storyData.score + " points"}</Col>
                   <Col xs={4}>{"by " + storyData.by}</Col>
                   <Col xs={3}>
-                    {this.timeSince(new Date(storyData.time * 1000))}
+                    {this.timeSince(new Date(storyData.time * 1000)) + " ago"}
                   </Col>
-                  <Col xs={3}>{storyData.descendants+' comments'}</Col>
+                  <Col xs={3}>
+                    {storyData.descendants
+                      ? storyData.descendants + " comments"
+                      : ""}
+                  </Col>
                 </Row>
               </Col>
             </Row>

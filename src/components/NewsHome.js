@@ -1,24 +1,118 @@
-import React, { Component } from 'react'
-import axios from 'axios'
-import Story from './Story'
+import React, { Component } from "react";
+import axios from "axios";
+import Story from "./Story";
+import { Container, Row, Col } from "react-grid";
+import {
+  FormControl,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  FormLabel,
+} from "@material-ui/core";
+import Loader from "react-loader-spinner";
 
 export default class NewsHome extends Component {
   state = {
-    storyIds: null,
+    stories: [],
+    storyType: "top",
   };
   componentDidMount() {
+    var data = [];
     axios
       .get(`https://hacker-news.firebaseio.com/v0/topstories.json?print=pretty`)
       .then((res) => {
-        this.setState({ storyIds: res.data });
+        let ids = res.data.slice(0, 30);
+        ids.map((x) => {
+          axios
+            .get(
+              "https://hacker-news.firebaseio.com/v0/item/" +
+                x +
+                ".json?print=pretty"
+            )
+            .then((r) => {
+              data.push(r.data);
+              this.setState({ stories: data });
+            });
+        });
+      });
+  }
+  getStories(storyType) {
+    var data = [];
+    axios
+      .get(
+        `https://hacker-news.firebaseio.com/v0/` +
+          storyType +
+          `stories.json?print=pretty`
+      )
+      .then((res) => {
+        let ids = res.data.slice(0, 30);
+        ids.map((x) => {
+          axios
+            .get(
+              "https://hacker-news.firebaseio.com/v0/item/" +
+                x +
+                ".json?print=pretty"
+            )
+            .then((r) => {
+              data.push(r.data);
+              this.setState({ stories: data });
+            });
+        });
       });
   }
   render() {
-    const ids = this.state.storyIds && this.state.storyIds.splice(0,30)
+    const stories = this.state.stories.slice(0, 30);
     return (
       <div>
         <h1>Hacker News</h1>
-        {ids && ids.length > 0 && ids.map((x,i) => <Story id={x} key={x} index={i+1} /> )}
+        <Row style={{ marginBottom: "1rem" }}>
+          <Col xs={4}></Col>
+          <Col xs={12}>
+            <FormControl component="fieldset">
+              <RadioGroup
+                aria-label="gender"
+                name="gender1"
+                row
+                value={this.state.storyType}
+                onChange={(e) => {
+                  this.getStories(e.target.value);
+                  this.setState({ storyType: e.target.value });
+                }}
+              >
+                <FormControlLabel value="top" control={<Radio />} label="top" />
+                <FormControlLabel value="ask" control={<Radio />} label="ask" />
+                <FormControlLabel
+                  value="show"
+                  control={<Radio />}
+                  label="show"
+                />
+                <FormControlLabel
+                  value="job"
+                  control={<Radio />}
+                  label="jobs"
+                />
+              </RadioGroup>
+            </FormControl>
+          </Col>
+        </Row>
+        <Row>
+          <div>
+            {stories &&
+              stories.length >= 30 &&
+              stories.map((x, i) => (
+                <Story story={x} key={x.id} index={i + 1} />
+              ))}
+            {stories && stories.length !== 30 && (
+              <Loader
+                type="Puff"
+                color="#00BFFF"
+                height={100}
+                width={100}
+                timeout={3000} //3 secs
+              />
+            )}
+          </div>
+        </Row>
       </div>
     );
   }
