@@ -1,12 +1,11 @@
-import logo from './logo.svg';
 import './App.css';
-import NewsHome from './components/NewsHome'
+import Routes from "./routes/Routes"
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <NewsHome />
+        <Routes />
       </header>
     </div>
   );

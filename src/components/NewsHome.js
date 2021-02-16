@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Story from "./Story";
-import { Container, Row, Col } from "react-grid";
+import { Row, Col } from "react-grid";
 import {
   FormControl,
   FormControlLabel,
   RadioGroup,
   Radio,
-  FormLabel,
 } from "@material-ui/core";
 import Loader from "react-loader-spinner";
 
@@ -64,14 +63,13 @@ export default class NewsHome extends Component {
     const stories = this.state.stories.slice(0, 30);
     return (
       <div>
-        <h1>Hacker News</h1>
+        <h1>Hackker News</h1>
         <Row style={{ marginBottom: "1rem" }}>
           <Col xs={4}></Col>
           <Col xs={12}>
             <FormControl component="fieldset">
               <RadioGroup
-                aria-label="gender"
-                name="gender1"
+                name="story_type"
                 row
                 value={this.state.storyType}
                 onChange={(e) => {
@@ -95,7 +93,7 @@ export default class NewsHome extends Component {
             </FormControl>
           </Col>
         </Row>
-        <Row>
+        <Row style={{ justifyContent: "center" }}>
           <div>
             {stories &&
               stories.length >= 30 &&
@@ -108,7 +106,7 @@ export default class NewsHome extends Component {
                 color="#00BFFF"
                 height={100}
                 width={100}
-                timeout={3000} //3 secs
+                timeout={10000} //3 secs
               />
             )}
           </div>

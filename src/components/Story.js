@@ -1,25 +1,12 @@
 import React, { Component } from "react";
-import axios from "axios";
 import psl from "psl";
 import { Container, Row, Col } from "react-grid";
-// let psl = require("psl");
+import { Link } from "react-router-dom";
 
 export default class Story extends Component {
   state = {
     storyData: null,
   };
-  componentDidMount() {
-    // const storyId = this.props.id;
-    // axios
-    //   .get(
-    //     "https://hacker-news.firebaseio.com/v0/item/" +
-    //       storyId +
-    //       ".json?print=pretty"
-    //   )
-    //   .then((res) => {
-    //     this.setState({ storyData: res.data });
-    //   });
-  }
   extractHostname(url) {
     var hostname;
     //find & remove protocol (http, ftp, etc.) and get hostname
@@ -68,23 +55,29 @@ export default class Story extends Component {
     return (
       <Container>
         {storyData && (
-          <div style={{ marginTop: "2rem" }}>
+          <div style={{ marginTop: "0.5rem" }}>
             <Row style={{ background: "#dedede", padding: "10px 0px 10px 0" }}>
               <Col xs={2}>{this.props.index}</Col>
               <Col xs={10}>
-                <Row>
+                <Row
+                  onClick={() =>
+                    storyData.url ? window.open(storyData.url, "_blank") : ""
+                  }
+                >
                   <Col xs={8}>{storyData.title}</Col>
                   <Col xs={2}>
-                    (
                     {storyData.url
-                      ? psl.get(this.extractHostname(storyData.url))
+                      ? "(" + psl.get(this.extractHostname(storyData.url)) + ")"
                       : ""}
-                    )
                   </Col>
                 </Row>
                 <Row style={{ marginTop: "0.5rem" }}>
                   <Col xs={2}>{storyData.score + " points"}</Col>
-                  <Col xs={4}>{"by " + storyData.by}</Col>
+                  <Col xs={4}>
+                    <Link to={"/user/" + storyData.by}>
+                      {"by " + storyData.by}
+                    </Link>
+                  </Col>
                   <Col xs={3}>
                     {this.timeSince(new Date(storyData.time * 1000)) + " ago"}
                   </Col>
