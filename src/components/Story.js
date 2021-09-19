@@ -57,34 +57,28 @@ export default class Story extends Component {
         {storyData && (
           <div style={{ marginTop: "0.5rem" }}>
             <Row style={{ background: "#dedede", padding: "10px 0px 10px 0" }}>
-              <Col xs={2}>{this.props.index}</Col>
-              <Col xs={10}>
+              <Col xs={1} style={{ margin: 'auto'}}>{this.props.index}.</Col>
+              <Col xs={11}>
                 <Row
                   onClick={() =>
                     storyData.url ? window.open(storyData.url, "_blank") : ""
                   }
                 >
-                  <Col xs={8}>{storyData.title}</Col>
-                  <Col xs={2}>
-                    {storyData.url
-                      ? "(" + psl.get(this.extractHostname(storyData.url)) + ")"
-                      : ""}
+                  <Col xs={9} style={{ textAlign: 'left'}}><strong>{storyData.title}</strong></Col>
+                  <Col xs={3} style={{ textAlign: 'left'}}>
+                    {storyData.url &&
+                      <Link to={storyData.url} target="_blank" rel="noopener noreferrer">
+                        storyData.url
+                      </Link>
+                    }
                   </Col>
                 </Row>
-                <Row style={{ marginTop: "0.5rem" }}>
-                  <Col xs={2}>{storyData.score + " points"}</Col>
-                  <Col xs={4}>
+                <Row style={{ marginTop: "0.5rem", textAlign: 'left' }}>
+                  <Col xs={9}>{`${storyData.score} points | by ${storyData.by} | ${this.timeSince(new Date(storyData.time * 1000))} ago | ${storyData.descendants} comments`}</Col>
+                  <Col xs={3}>
                     <Link to={"/user/" + storyData.by}>
                       {"by " + storyData.by}
                     </Link>
-                  </Col>
-                  <Col xs={3}>
-                    {this.timeSince(new Date(storyData.time * 1000)) + " ago"}
-                  </Col>
-                  <Col xs={3}>
-                    {storyData.descendants
-                      ? storyData.descendants + " comments"
-                      : ""}
                   </Col>
                 </Row>
               </Col>
